@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <title>ローマ字タイピング練習</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -14,6 +12,7 @@
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to bottom right, #2c3e50, #3498db);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
@@ -22,26 +21,18 @@
 
     .card {
       background: rgba(255, 255, 255, 0.1);
-      padding: 40px 30px;
+      padding: 30px 25px;
       border-radius: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
       width: 90%;
       max-width: 500px;
       text-align: center;
       backdrop-filter: blur(10px);
+      margin-bottom: 20px;
     }
 
-    .kanji {
-      font-size: 56px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .kana {
-      font-size: 24px;
-      color: #dcdcdc;
-      margin-bottom: 30px;
-    }
+    .kanji { font-size: 56px; font-weight: bold; margin-bottom: 10px; }
+    .kana { font-size: 24px; color: #dcdcdc; margin-bottom: 30px; }
 
     input[type="text"] {
       font-size: 24px;
@@ -51,62 +42,131 @@
       border-radius: 10px;
       outline: none;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      transition: box-shadow 0.3s;
     }
 
     input[type="text"]:focus {
       box-shadow: 0 0 10px 2px #74b9ff;
     }
 
-    .footer {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #ccc;
+    .settings {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      border-radius: 15px;
+    }
+
+    select, input[type="number"] {
+      font-size: 16px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      width: 200px;
+    }
+
+    .timer {
+      margin-top: 10px;
+      font-size: 20px;
+      color: #ffecb3;
     }
   </style>
 </head>
 <body>
+
+  <div class="settings">
+    <label>制限時間:
+      <select id="timeMode">
+        <option value="none">なし</option>
+        <option value="custom">カスタム</option>
+      </select>
+    </label>
+    <input type="number" id="customSeconds" placeholder="秒数" min="1" max="300" style="display:none;">
+    <button onclick="startGame()">開始</button>
+    <div class="timer" id="timerDisplay"></div>
+  </div>
+
   <div class="card">
-    <div class="kanji" id="kanji">読み込み中...</div>
+    <div class="kanji" id="kanji">設定して開始！</div>
     <div class="kana" id="kana"></div>
     <input type="text" id="romajiInput" placeholder="ローマ字で入力" disabled>
-    <div class="footer">Enterキーなしで自動判定されるよ</div>
   </div>
 
   <script>
     const kanjiEl = document.getElementById("kanji");
     const kanaEl = document.getElementById("kana");
     const inputEl = document.getElementById("romajiInput");
+    const timeModeEl = document.getElementById("timeMode");
+    const customSecondsEl = document.getElementById("customSeconds");
+    const timerDisplay = document.getElementById("timerDisplay");
 
     let words = [];
     let currentWord = null;
+    let timeLimit = null;
+    let timer = null;
+
+    // UI切り替え
+    timeModeEl.addEventListener("change", () => {
+      customSecondsEl.style.display = timeModeEl.value === "custom" ? "block" : "none";
+    });
+
+    // データ読み込み
+    fetch("words.json")
+      .then(res => res.json())
+      .then(data => { words = data; })
+      .catch(err => {
+        kanjiEl.textContent = "データ読み込み失敗";
+        console.error(err);
+      });
+
+    function startGame() {
+      // タイマー設定
+      const mode = timeModeEl.value;
+      if (mode === "custom") {
+        timeLimit = parseInt(customSecondsEl.value) || 30;
+      } else {
+        timeLimit = null;
+        timerDisplay.textContent = "";
+      }
+
+      setNewWord();
+      inputEl.disabled = false;
+      inputEl.value = "";
+      inputEl.focus();
+
+      // タイマー起動
+      if (timeLimit) {
+        clearInterval(timer);
+        let secondsLeft = timeLimit;
+        timerDisplay.textContent = `残り: ${secondsLeft} 秒`;
+
+        timer = setInterval(() => {
+          secondsLeft--;
+          timerDisplay.textContent = `残り: ${secondsLeft} 秒`;
+          if (secondsLeft <= 0) {
+            clearInterval(timer);
+            kanjiEl.textContent = "終了！";
+            kanaEl.textContent = "";
+            inputEl.disabled = true;
+          }
+        }, 1000);
+      }
+    }
 
     function setNewWord() {
       currentWord = words[Math.floor(Math.random() * words.length)];
       kanjiEl.textContent = currentWord.kanji;
       kanaEl.textContent = currentWord.kana;
       inputEl.value = "";
-      inputEl.disabled = false;
-      inputEl.focus();
     }
 
-    inputEl.addEventListener("input", () => {
-      if (inputEl.value.toLowerCase() === currentWord.romaji) {
-        setTimeout(setNewWord, 200);
+    // Enterキーでチェック
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && inputEl.value.toLowerCase() === currentWord.romaji) {
+        setNewWord();
       }
     });
-
-    fetch("words.json")
-      .then(response => response.json())
-      .then(data => {
-        words = data;
-        setNewWord();
-      })
-      .catch(err => {
-        kanjiEl.textContent = "データ読み込みエラー";
-        kanaEl.textContent = "";
-        console.error(err);
-      });
   </script>
 </body>
 </html>
