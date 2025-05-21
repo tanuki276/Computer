@@ -1,123 +1,112 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<title>SUPER計算機</title>
-<style>
-  body {
-    background: black;
-    color: #0f0;
-    font-family: monospace;
-    text-align: center;
-    padding: 20px;
-    margin: 0;
-  }
-  h1 {
-    font-size: 32px;
-    margin-bottom: 15px;
-    text-shadow: 0 0 8px #0f0;
-  }
-  #display {
-    font-size: 24px;
-    border: 2px solid #0f0;
-    background: #001100;
-    padding: 10px;
-    min-height: 36px;
-    margin-bottom: 15px;
-    word-break: break-all;
-  }
-  #keyboard {
-    max-width: 360px;
-    margin: 0 auto 10px;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-  }
-  button.button {
-    background: #002200;
-    border: 1px solid #0f0;
-    color: #0f0;
-    font-size: 20px;
-    padding: 12px 0;
-    cursor: pointer;
-    user-select: none;
-    transition: background 0.2s;
-  }
-  button.button:hover {
-    background: #004400;
-  }
-  #actions {
-    margin-top: 10px;
-  }
-  #result {
-    margin-top: 20px;
-    font-size: 22px;
-    color: #0ff;
-    text-shadow: 0 0 6px #0ff;
-    min-height: 50px;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>ローマ字タイピング練習</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #2c3e50, #3498db);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .kanji {
+      font-size: 56px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .kana {
+      font-size: 24px;
+      color: #dcdcdc;
+      margin-bottom: 30px;
+    }
+
+    input[type="text"] {
+      font-size: 24px;
+      padding: 12px 20px;
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: box-shadow 0.3s;
+    }
+
+    input[type="text"]:focus {
+      box-shadow: 0 0 10px 2px #74b9ff;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #ccc;
+    }
+  </style>
 </head>
 <body>
-  <h1>SUPER計算機</h1>
-  <div id="display"></div>
-  <div id="keyboard"></div>
-
-  <div id="actions">
-    <button class="button" onclick="clearDisplay()">クリア</button>
-    <button class="button" onclick="calculate()">計算</button>
+  <div class="card">
+    <div class="kanji" id="kanji">読み込み中...</div>
+    <div class="kana" id="kana"></div>
+    <input type="text" id="romajiInput" placeholder="ローマ字で入力" disabled>
+    <div class="footer">Enterキーなしで自動判定されるよ</div>
   </div>
 
-  <div id="result"></div>
+  <script>
+    const kanjiEl = document.getElementById("kanji");
+    const kanaEl = document.getElementById("kana");
+    const inputEl = document.getElementById("romajiInput");
 
-<script>
-  const keys = ["7","8","9","÷","(",
-                "4","5","6","*","）",
-                "1","2","3","-",".",
-                "0",".","+","/","+"];
-  const display = document.getElementById("display");
-  const keyboardDiv = document.getElementById("keyboard");
+    let words = [];
+    let currentWord = null;
 
-  // 表示上は ÷ だけど計算は / に変換
-  function appendChar(c) {
-    if (c === "÷") c = "/";
-    if (c === "）") c = ")";
-    display.innerText += c;
-  }
-
-  keys.forEach(k => {
-    const btn = document.createElement("button");
-    btn.className = "button";
-    btn.innerText = k;
-    btn.onclick = () => appendChar(k);
-    keyboardDiv.appendChild(btn);
-  });
-
-  function clearDisplay() {
-    display.innerText = "";
-    document.getElementById("result").innerText = "";
-  }
-
-  function isSafeExpression(expr) {
-    return /^[\d+\-*/().\s]+$/.test(expr);
-  }
-
-  function calculate() {
-    const input = display.innerText;
-    if (!isSafeExpression(input)) {
-      document.getElementById("result").innerText = "不正な式…";
-      return;
+    function setNewWord() {
+      currentWord = words[Math.floor(Math.random() * words.length)];
+      kanjiEl.textContent = currentWord.kanji;
+      kanaEl.textContent = currentWord.kana;
+      inputEl.value = "";
+      inputEl.disabled = false;
+      inputEl.focus();
     }
-    try {
-      const start = performance.now();
-      const answer = Function('"use strict";return (' + input + ')')();
-      const end = performance.now();
-      const time = (end - start).toFixed(6);
-      document.getElementById("result").innerHTML = `結果：${answer}<br>処理時間：${time} ミリ秒`;
-    } catch {
-      document.getElementById("result").innerText = "計算エラー…";
-    }
-  }
-</script>
+
+    inputEl.addEventListener("input", () => {
+      if (inputEl.value.toLowerCase() === currentWord.romaji) {
+        setTimeout(setNewWord, 200);
+      }
+    });
+
+    fetch("words.json")
+      .then(response => response.json())
+      .then(data => {
+        words = data;
+        setNewWord();
+      })
+      .catch(err => {
+        kanjiEl.textContent = "データ読み込みエラー";
+        kanaEl.textContent = "";
+        console.error(err);
+      });
+  </script>
 </body>
 </html>
