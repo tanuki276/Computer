@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>ローマ字タイピング練習</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     * { box-sizing: border-box; }
 
@@ -71,11 +72,42 @@
       font-size: 20px;
       color: #ffecb3;
     }
+
+    .settings-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .button-container button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .button-container button:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
 
-  <div class="settings">
+  <i class="fas fa-cog settings-icon" onclick="toggleSettings()"></i>
+
+  <div class="settings" style="display:none;">
     <label>制限時間:
       <select id="timeMode">
         <option value="none">なし</option>
@@ -83,8 +115,6 @@
       </select>
     </label>
     <input type="number" id="customSeconds" placeholder="秒数" min="1" max="300" style="display:none;">
-    <button onclick="startGame()">開始</button>
-    <div class="timer" id="timerDisplay"></div>
   </div>
 
   <div class="card">
@@ -93,6 +123,13 @@
     <input type="text" id="romajiInput" placeholder="ローマ字で入力" disabled>
   </div>
 
+  <div class="button-container">
+    <button onclick="startGame()">スタート</button>
+     <button onclick="stopGame()">終了</button>
+  </div>
+
+  <div class="timer" id="timerDisplay"></div>
+
   <script>
     const kanjiEl = document.getElementById("kanji");
     const kanaEl = document.getElementById("kana");
@@ -100,6 +137,7 @@
     const timeModeEl = document.getElementById("timeMode");
     const customSecondsEl = document.getElementById("customSeconds");
     const timerDisplay = document.getElementById("timerDisplay");
+    const settingsEl = document.querySelector(".settings");
 
     let words = [];
     let currentWord = null;
@@ -119,6 +157,10 @@
         kanjiEl.textContent = "データ読み込み失敗";
         console.error(err);
       });
+
+      function toggleSettings() {
+        settingsEl.style.display = settingsEl.style.display === "none" ? "flex" : "none";
+      }
 
     function startGame() {
       // タイマー設定
@@ -146,9 +188,7 @@
           timerDisplay.textContent = `残り: ${secondsLeft} 秒`;
           if (secondsLeft <= 0) {
             clearInterval(timer);
-            kanjiEl.textContent = "終了！";
-            kanaEl.textContent = "";
-            inputEl.disabled = true;
+            stopGame();
           }
         }, 1000);
       }
@@ -159,6 +199,14 @@
       kanjiEl.textContent = currentWord.kanji;
       kanaEl.textContent = currentWord.kana;
       inputEl.value = "";
+    }
+
+    function stopGame() {
+      clearInterval(timer);
+      kanjiEl.textContent = "終了！";
+      kanaEl.textContent = "";
+      inputEl.disabled = true;
+      timerDisplay.textContent = "";
     }
 
     // Enterキーでチェック
