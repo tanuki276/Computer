@@ -2,21 +2,66 @@
 <html>
 <head>
   <title>SUPER計算機</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
   <style>
-    body { background: black; color: lime; font-family: monospace; text-align: center; padding: 20px; }
-    #display { font-size: 24px; margin-bottom: 10px; border: 1px solid lime; padding: 10px; min-height: 30px; }
-    .button {
-      margin: 5px; padding: 10px 20px; font-size: 20px;
-      cursor: pointer; background: #111; color: lime; border: 1px solid lime;
+    body {
+      background: black;
+      color: #00ff00;
+      font-family: "Courier New", monospace;
+      text-align: center;
+      padding: 30px;
     }
-    #result { margin-top: 20px; font-size: 22px; }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #00ff00;
+    }
+
+    #display {
+      font-size: 28px;
+      border: 2px solid #00ff00;
+      padding: 15px;
+      margin-bottom: 20px;
+      min-height: 40px;
+      background-color: #001100;
+      box-shadow: inset 0 0 5px #00ff00;
+      word-break: break-word;
+    }
+
+    .button {
+      margin: 8px;
+      padding: 15px 25px;
+      font-size: 20px;
+      background: #002200;
+      color: #00ff00;
+      border: 1px solid #00ff00;
+      box-shadow: 0 0 5px #00ff00;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .button:hover {
+      background: #003300;
+    }
+
+    #keyboard {
+      max-width: 400px;
+      margin: auto;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 24px;
+      color: #00ffaa;
+      text-shadow: 0 0 5px #00ffaa;
+    }
   </style>
 </head>
 <body>
   <h1>SUPER計算機</h1>
 
   <div id="display"></div>
-
   <div id="keyboard"></div>
 
   <button class="button" onclick="clearDisplay()">クリア</button>
@@ -25,7 +70,6 @@
   <div id="result"></div>
 
   <script>
-    // キーボード生成
     const keys = "7894561230.+-*/()";
     const keyboardDiv = document.getElementById("keyboard");
     const display = document.getElementById("display");
@@ -38,11 +82,6 @@
       keyboardDiv.appendChild(btn);
     }
 
-    // 安全チェック（数字と記号だけ）
-    function isSafeExpression(expr) {
-      return /^[\d+\-*/().\s]+$/.test(expr);
-    }
-
     function clearDisplay() {
       display.innerText = "";
       document.getElementById("result").innerText = "";
@@ -50,15 +89,15 @@
 
     function calculate() {
       const input = display.innerText;
-      if (!isSafeExpression(input)) {
+      if (!/^[\d+\-*/().\s]+$/.test(input)) {
         document.getElementById("result").innerText = "不正な式…";
         return;
       }
 
-      const start = performance.now(); // 計測開始
+      const start = performance.now();
       try {
-        const answer = eval(input);
-        const end = performance.now(); // 計測終了
+        const answer = math.evaluate(input);
+        const end = performance.now();
         const time = (end - start).toFixed(6);
         document.getElementById("result").innerHTML =
           `結果：${answer}<br>処理時間：${time} ミリ秒`;
