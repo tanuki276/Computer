@@ -142,7 +142,8 @@
     <label>制限時間:
       <select id="timeMode">
         <option value="none">なし</option>
-        <option value="custom">カスタム</option>
+        <option value="custom">カスタム（制限時間内で何問か）</option>
+        <option value="reset">リセット（1問正解ごとに制限時間が戻る）</option>
       </select>
     </label>
     <input type="number" id="customSeconds" placeholder="秒数" min="1" max="300" style="display:none;">
@@ -163,6 +164,7 @@
   </div>
 
   <div class="timer" id="timerDisplay"></div>
+  <div class="score" id="scoreDisplay"></div>
 
   <script>
     const kanjiEl = document.getElementById("kanji");
@@ -174,8 +176,9 @@
     const settingsPanel = document.getElementById("settingsPanel");
     const gameCard = document.getElementById("gameCard");
     const overlay = document.getElementById("overlay");
+    const scoreDisplay = document.getElementById("scoreDisplay"); // スコア表示要素を追加
 
-    // ⭐ ここに単語リストを直接埋め込みました ⭐
+    // ⭐ 単語リストを直接JavaScriptコード内に埋め込みます ⭐
     const words = [
       { "kanji": "寿司", "kana": "すし", "romaji": "sushi", "altRomaji": [] },
       { "kanji": "猫", "kana": "ねこ", "romaji": "neko", "altRomaji": [] },
@@ -217,12 +220,14 @@
     ];
 
     let currentWord = null;
-    let timeLimit = null;
+    let timeLimit = null; // 設定された制限時間（初期値）
     let timer = null;
+    let secondsLeft = 0; // 現在の残り時間
+    let score = 0; // スコアを初期化
 
     // UI切り替え: 制限時間モード
     timeModeEl.addEventListener("change", () => {
-      customSecondsEl.style.display = timeModeEl.value === "custom" ? "block" : "none";
+      customSecondsEl.style.display = (timeModeEl.value === "custom" || timeModeEl.value === "reset") ? "block" : "none";
     });
 
     // 設定パネルの表示/非表示を切り替える関数
@@ -236,11 +241,14 @@
         settingsPanel.style.display = "none";
         gameCard.style.display = "block"; // ゲーム画面を再表示
         overlay.style.display = "none"; // オーバーレイを非表示
+        // 設定を閉じた際、ゲーム開始前の初期メッセージを表示
+        kanjiEl.textContent = "スタートボタンを押して開始！";
+        kanaEl.textContent = "";
       }
     }
 
     function startGame() {
-      // 単語リストが空の場合は開始しない
+      // 単語リストが空の場合（通常は埋め込みなので起こらないが念のため）
       if (words.length === 0) {
         kanjiEl.textContent = "単語データがありません。";
         kanaEl.textContent = "スクリプト内の単語リストを確認してください。";
@@ -261,7 +269,7 @@
 
       // タイマー設定
       const mode = timeModeEl.value;
-      if (mode === "custom") {
+      if (mode === "custom" || mode === "reset") {
         timeLimit = parseInt(customSecondsEl.value) || 30; // デフォルトは30秒
       } else {
         timeLimit = null; // 制限時間なし
@@ -272,11 +280,13 @@
       inputEl.disabled = false;
       inputEl.value = "";
       inputEl.focus();
+      score = 0; // ゲーム開始時にスコアをリセット
+      updateScoreDisplay(); // スコア表示を更新
 
       // タイマー起動
       if (timeLimit !== null) { // nullチェックで制限時間なしの場合を考慮
         clearInterval(timer); // 既存のタイマーをクリア
-        let secondsLeft = timeLimit;
+        secondsLeft = timeLimit; // 初期残り時間を設定
         timerDisplay.textContent = `残り: ${secondsLeft} 秒`;
 
         timer = setInterval(() => {
@@ -308,6 +318,11 @@
       timerDisplay.textContent = ""; // タイマー表示をクリア
     }
 
+    // スコア表示を更新する関数
+    function updateScoreDisplay() {
+      scoreDisplay.textContent = `スコア: ${score}`;
+    }
+
     // Enterキーでチェック
     inputEl.addEventListener("keydown", (e) => {
       // inputEl.disabledがtrueの場合は何もしない (ゲーム停止中)
@@ -316,15 +331,26 @@
       if (e.key === "Enter") {
         const typedRomaji = inputEl.value.toLowerCase();
         // 正しいローマ字、または代替ローマ字のいずれかに一致するかをチェック
-        if (typedRomaji === currentWord.romaji || (currentWord.altRomaji && currentWord.altRomaji.includes(typedRomaji))) {
-          setNewWord();
+        const isAltRomajiMatch = currentWord.altRomaji && Array.isArray(currentWord.altRomaji) && currentWord.altRomaji.includes(typedRomaji);
+
+        if (typedRomaji === currentWord.romaji || isAltRomajiMatch) {
+          score++; // 正解したらスコアをインクリメント
+          updateScoreDisplay(); // スコア表示を更新
+          setNewWord(); // 次の単語を設定
+
+          // 「リセット」モードの場合、制限時間を元に戻す
+          if (timeModeEl.value === "reset" && timeLimit !== null) {
+            secondsLeft = timeLimit;
+            timerDisplay.textContent = `残り: ${secondsLeft} 秒`;
+          }
         }
       }
     });
 
     // 初期表示設定
     stopGame(); // 初期状態でゲームを停止状態にする
-    kanjiEl.textContent = "スタートボタンを押して開始！"; // 初期メッセージを設定
+    kanjiEl.textContent = "スタートボタンを押して開始！"; // 初期メッセージ
+    scoreDisplay.textContent = "スコア: 0"; // 初期スコア表示
   </script>
 </body>
 </html>
