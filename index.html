@@ -101,6 +101,12 @@
     .button-container button:hover {
       background-color: #0056b3;
     }
+
+    .score {
+      margin-top: 10px;
+      font-size: 20px;
+      color: #ff6b6b;
+    }
   </style>
 </head>
 <body>
@@ -112,6 +118,7 @@
       <select id="timeMode">
         <option value="none">なし</option>
         <option value="custom">カスタム</option>
+        <option value="reset">カスタム（毎回リセット）</option>
       </select>
     </label>
     <input type="number" id="customSeconds" placeholder="秒数" min="1" max="300" style="display:none;">
@@ -129,6 +136,7 @@
   </div>
 
   <div class="timer" id="timerDisplay"></div>
+  <div class="score" id="scoreDisplay"></div>
 
   <script>
     const kanjiEl = document.getElementById("kanji");
@@ -138,18 +146,21 @@
     const customSecondsEl = document.getElementById("customSeconds");
     const timerDisplay = document.getElementById("timerDisplay");
     const settingsEl = document.querySelector(".settings");
+    const scoreDisplay = document.getElementById("scoreDisplay");
 
     let words = [];
     let currentWord = null;
     let timeLimit = null;
     let timer = null;
+    let score = 0;
+    let secondsLeft = 0;
 
     // UI切り替え
     timeModeEl.addEventListener("change", () => {
-      customSecondsEl.style.display = timeModeEl.value === "custom" ? "block" : "none";
+      customSecondsEl.style.display = timeModeEl.value === "custom" || timeModeEl.value === "reset" ? "block" : "none";
     });
 
-    // データ読み込み
+    // データ読み込み（words.jsonが必要です）
     fetch("words.json")
       .then(res => res.json())
       .then(data => { words = data; })
@@ -165,10 +176,10 @@
     function startGame() {
       // タイマー設定
       const mode = timeModeEl.value;
-      if (mode === "custom") {
-        timeLimit = parseInt(customSecondsEl.value) || 30;
+      if (mode === "custom" || mode === "reset") {
+        timeLimit = parseInt(customSecondsEl.value) || 30; // カスタムまたはリセットモードの場合、指定秒数または30秒
       } else {
-        timeLimit = null;
+        timeLimit = null; // 制限時間なし
         timerDisplay.textContent = "";
       }
 
@@ -176,43 +187,55 @@
       inputEl.disabled = false;
       inputEl.value = "";
       inputEl.focus();
+      score = 0; // スコアをリセット
+      updateScoreDisplay(); // スコア表示を更新
 
       // タイマー起動
       if (timeLimit) {
-        clearInterval(timer);
-        let secondsLeft = timeLimit;
-        timerDisplay.textContent = `残り: ${secondsLeft} 秒`;
+        clearInterval(timer); // 既存のタイマーがあればクリア
+        secondsLeft = timeLimit; // 残り時間を設定
+        timerDisplay.textContent = `残り: ${secondsLeft} 秒`; // タイマー表示を更新
 
         timer = setInterval(() => {
           secondsLeft--;
           timerDisplay.textContent = `残り: ${secondsLeft} 秒`;
           if (secondsLeft <= 0) {
-            clearInterval(timer);
-            stopGame();
+            clearInterval(timer); // 0秒になったらタイマーを停止
+            stopGame(); // ゲームを終了
           }
-        }, 1000);
+        }, 1000); // 1秒ごとに実行
       }
     }
 
     function setNewWord() {
-      currentWord = words[Math.floor(Math.random() * words.length)];
-      kanjiEl.textContent = currentWord.kanji;
-      kanaEl.textContent = currentWord.kana;
-      inputEl.value = "";
+      currentWord = words[Math.floor(Math.random() * words.length)]; // ランダムな単語を選択
+      kanjiEl.textContent = currentWord.kanji; // 漢字を表示
+      kanaEl.textContent = currentWord.kana;   // かなを表示
+      inputEl.value = ""; // 入力欄をクリア
     }
 
     function stopGame() {
-      clearInterval(timer);
-      kanjiEl.textContent = "終了！";
+      clearInterval(timer); // タイマーを停止
+      kanjiEl.textContent = "終了！"; // 終了メッセージ
       kanaEl.textContent = "";
-      inputEl.disabled = true;
-      timerDisplay.textContent = "";
+      inputEl.disabled = true; // 入力欄を無効化
+      timerDisplay.textContent = ""; // タイマー表示をクリア
     }
 
-    // Enterキーでチェック
+    function updateScoreDisplay() {
+      scoreDisplay.textContent = `スコア: ${score}`; // スコア表示を更新
+    }
+
+    // Enterキーで入力チェック
     inputEl.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && inputEl.value.toLowerCase() === currentWord.romaji) {
-        setNewWord();
+        score++; // スコアをインクリメント
+        updateScoreDisplay(); // スコア表示を更新
+        setNewWord(); // 次の単語を設定
+          if (timeModeEl.value === "reset") {
+            secondsLeft = timeLimit; // リセットモードの場合、制限時間を元に戻す
+            timerDisplay.textContent = `残り: ${secondsLeft} 秒`; // タイマー表示を更新
+          }
       }
     });
   </script>
