@@ -15,7 +15,7 @@
   { "kanji": "こんばんは", "kana": "こんばんは", "romaji": "konbanwa", "altRomaji": [] },
   { "kanji": "さようなら", "kana": "さようなら", "romaji": "sayounara", "altRomaji": ["sayonara"] },
   { "kanji": "いただきます", "kana": "いただきます", "romaji": "itadakimasu", "altRomaji": [] },
-  { "kanji": "ごちそうさま", "kana": "ごちそうさま", "romaji": "gochisousama", "altRomaji": ["gotisousama"] },
+  { "kanji": "ごちそうさま", "kana": "ごちそうさま", "romaji": "gochisousama", "altRomaji": ["gochisosama"] },
   { "kanji": "すみません", "kana": "すみません", "romaji": "sumimasen", "altRomaji": [] },
   { "kanji": "おやすみ", "kana": "おやすみ", "romaji": "oyasumi", "altRomaji": [] },
   { "kanji": "はい", "kana": "はい", "romaji": "hai", "altRomaji": [] },
