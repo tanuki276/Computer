@@ -313,8 +313,12 @@
       // inputEl.disabledがtrueの場合は何もしない (ゲーム停止中)
       if (inputEl.disabled) return;
 
-      if (e.key === "Enter" && inputEl.value.toLowerCase() === currentWord.romaji) {
-        setNewWord();
+      if (e.key === "Enter") {
+        const typedRomaji = inputEl.value.toLowerCase();
+        // 正しいローマ字、または代替ローマ字のいずれかに一致するかをチェック
+        if (typedRomaji === currentWord.romaji || (currentWord.altRomaji && currentWord.altRomaji.includes(typedRomaji))) {
+          setNewWord();
+        }
       }
     });
 
