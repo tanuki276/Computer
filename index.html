@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SUPER計算機</title>
+  <style>
+    body { background: black; color: lime; font-family: monospace; text-align: center; padding: 20px; }
+    #display { font-size: 24px; margin-bottom: 10px; border: 1px solid lime; padding: 10px; min-height: 30px; }
+    .button {
+      margin: 5px; padding: 10px 20px; font-size: 20px;
+      cursor: pointer; background: #111; color: lime; border: 1px solid lime;
+    }
+    #result { margin-top: 20px; font-size: 22px; }
+  </style>
+</head>
+<body>
+  <h1>SUPER計算機</h1>
+
+  <div id="display"></div>
+
+  <div id="keyboard"></div>
+
+  <button class="button" onclick="clearDisplay()">クリア</button>
+  <button class="button" onclick="calculate()">計算</button>
+
+  <div id="result"></div>
+
+  <script>
+    // キーボード生成
+    const keys = "7894561230.+-*/()";
+    const keyboardDiv = document.getElementById("keyboard");
+    const display = document.getElementById("display");
+
+    for (let char of keys) {
+      const btn = document.createElement("button");
+      btn.innerText = char;
+      btn.className = "button";
+      btn.onclick = () => display.innerText += char;
+      keyboardDiv.appendChild(btn);
+    }
+
+    // 安全チェック（数字と記号だけ）
+    function isSafeExpression(expr) {
+      return /^[\d+\-*/().\s]+$/.test(expr);
+    }
+
+    function clearDisplay() {
+      display.innerText = "";
+      document.getElementById("result").innerText = "";
+    }
+
+    function calculate() {
+      const input = display.innerText;
+      if (!isSafeExpression(input)) {
+        document.getElementById("result").innerText = "不正な式…";
+        return;
+      }
+
+      const start = performance.now(); // 計測開始
+      try {
+        const answer = eval(input);
+        const end = performance.now(); // 計測終了
+        const time = (end - start).toFixed(6);
+        document.getElementById("result").innerHTML =
+          `結果：${answer}<br>処理時間：${time} ミリ秒`;
+      } catch (e) {
+        document.getElementById("result").innerText = "計算エラー…";
+      }
+    }
+  </script>
+</body>
+</html>
