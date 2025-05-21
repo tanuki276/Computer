@@ -146,7 +146,8 @@
       </select>
     </label>
     <input type="number" id="customSeconds" placeholder="秒数" min="1" max="300" style="display:none;">
-    <button onclick="toggleSettings()">閉じる</button> </div>
+    <button onclick="toggleSettings()">閉じる</button>
+  </div>
 
   <div class="overlay" id="overlay"></div>
 
@@ -176,44 +177,44 @@
 
     // ⭐ ここに単語リストを直接埋め込みました ⭐
     const words = [
-  { "kanji": "寿司", "kana": "すし", "romaji": "sushi", "altRomaji": [] },
-  { "kanji": "猫", "kana": "ねこ", "romaji": "neko", "altRomaji": [] },
-  { "kanji": "電車", "kana": "でんしゃ", "romaji": "densha", "altRomaji": [] },
-  { "kanji": "大丈夫", "kana": "だいじょうぶ", "romaji": "daijoubu", "altRomaji": ["daijobu"] },
-  { "kanji": "火山", "kana": "かざん", "romaji": "kazan", "altRomaji": [] },
-  { "kanji": "友達", "kana": "ともだち", "romaji": "tomodachi", "altRomaji": [] },
-  { "kanji": "桜", "kana": "さくら", "romaji": "sakura", "altRomaji": [] },
-  { "kanji": "富士山", "kana": "ふじさん", "romaji": "fujisan", "altRomaji": ["fujiyama"] },
-  { "kanji": "東京", "kana": "とうきょう", "romaji": "toukyou", "altRomaji": ["tokyo"] },
-  { "kanji": "ラーメン", "kana": "らーめん", "romaji": "raamen", "altRomaji": ["ramen"] },
-  { "kanji": "ありがとう", "kana": "ありがとう", "romaji": "arigatou", "altRomaji": ["arigato"] },
-  { "kanji": "おはよう", "kana": "おはよう", "romaji": "ohayou", "altRomaji": ["ohayo"] },
-  { "kanji": "こんにちは", "kana": "こんにちは", "romaji": "konnichiwa", "altRomaji": [] },
-  { "kanji": "こんばんは", "kana": "こんばんは", "romaji": "konbanwa", "altRomaji": [] },
-  { "kanji": "さようなら", "kana": "さようなら", "romaji": "sayounara", "altRomaji": ["sayonara"] },
-  { "kanji": "いただきます", "kana": "いただきます", "romaji": "itadakimasu", "altRomaji": [] },
-  { "kanji": "ごちそうさま", "kana": "ごちそうさま", "romaji": "gochisousama", "altRomaji": ["gochisosama"] },
-  { "kanji": "すみません", "kana": "すみません", "romaji": "sumimasen", "altRomaji": [] },
-  { "kanji": "おやすみ", "kana": "おやすみ", "romaji": "oyasumi", "altRomaji": [] },
-  { "kanji": "はい", "kana": "はい", "romaji": "hai", "altRomaji": [] },
-  { "kanji": "いいえ", "kana": "いいえ", "romaji": "iie", "altRomaji": [] },
-  { "kanji": "日本", "kana": "にほん", "romaji": "nihon", "altRomaji": ["nippon"] },
-  { "kanji": "北海道", "kana": "ほっかいどう", "romaji": "hokkaidou", "altRomaji": ["hokkaido"] },
-  { "kanji": "沖縄", "kana": "おきなわ", "romaji": "okinawa", "altRomaji": [] },
-  { "kanji": "梅雨", "kana": "つゆ", "romaji": "tsuyu", "altRomaji": ["tuyu"] },
-  { "kanji": "台風", "kana": "たいふう", "romaji": "taifuu", "altRomaji": ["taifu"] },
-  { "kanji": "季節", "kana": "きせつ", "romaji": "kisetsu", "altRomaji": ["kisetu"] },
-  { "kanji": "夏", "kana": "なつ", "romaji": "natsu", "altRomaji": ["natu"] },
-  { "kanji": "冬", "kana": "ふゆ", "romaji": "fuyu", "altRomaji": [] },
-  { "kanji": "春", "kana": "はる", "romaji": "haru", "altRomaji": [] },
-  { "kanji": "秋", "kana": "あき", "romaji": "aki", "altRomaji": [] },
-  { "kanji": "食べ物", "kana": "たべもの", "romaji": "tabemono", "altRomaji": [] },
-  { "kanji": "飲み物", "kana": "のみもの", "romaji": "nomimono", "altRomaji": [] },
-  { "kanji": "魚", "kana": "さかな", "romaji": "sakana", "altRomaji": [] },
-  { "kanji": "肉", "kana": "にく", "romaji": "niku", "altRomaji": [] },
-  { "kanji": "野菜", "kana": "やさい", "romaji": "yasai", "altRomaji": [] },
-  { "kanji": "果物", "kana": "くだもの", "romaji": "kudamono", "altRomaji": [] }
-]
+      { "kanji": "寿司", "kana": "すし", "romaji": "sushi", "altRomaji": [] },
+      { "kanji": "猫", "kana": "ねこ", "romaji": "neko", "altRomaji": [] },
+      { "kanji": "電車", "kana": "でんしゃ", "romaji": "densha", "altRomaji": [] },
+      { "kanji": "大丈夫", "kana": "だいじょうぶ", "romaji": "daijoubu", "altRomaji": ["daijobu"] },
+      { "kanji": "火山", "kana": "かざん", "romaji": "kazan", "altRomaji": [] },
+      { "kanji": "友達", "kana": "ともだち", "romaji": "tomodachi", "altRomaji": [] },
+      { "kanji": "桜", "kana": "さくら", "romaji": "sakura", "altRomaji": [] },
+      { "kanji": "富士山", "kana": "ふじさん", "romaji": "fujisan", "altRomaji": ["fujiyama"] },
+      { "kanji": "東京", "kana": "とうきょう", "romaji": "toukyou", "altRomaji": ["tokyo"] },
+      { "kanji": "ラーメン", "kana": "らーめん", "romaji": "raamen", "altRomaji": ["ramen"] },
+      { "kanji": "ありがとう", "kana": "ありがとう", "romaji": "arigatou", "altRomaji": ["arigato"] },
+      { "kanji": "おはよう", "kana": "おはよう", "romaji": "ohayou", "altRomaji": ["ohayo"] },
+      { "kanji": "こんにちは", "kana": "こんにちは", "romaji": "konnichiwa", "altRomaji": [] },
+      { "kanji": "こんばんは", "kana": "こんばんは", "romaji": "konbanwa", "altRomaji": [] },
+      { "kanji": "さようなら", "kana": "さようなら", "romaji": "sayounara", "altRomaji": ["sayonara"] },
+      { "kanji": "いただきます", "kana": "いただきます", "romaji": "itadakimasu", "altRomaji": [] },
+      { "kanji": "ごちそうさま", "kana": "ごちそうさま", "romaji": "gochisousama", "altRomaji": ["gochisosama"] },
+      { "kanji": "すみません", "kana": "すみません", "romaji": "sumimasen", "altRomaji": [] },
+      { "kanji": "おやすみ", "kana": "おやすみ", "romaji": "oyasumi", "altRomaji": [] },
+      { "kanji": "はい", "kana": "はい", "romaji": "hai", "altRomaji": [] },
+      { "kanji": "いいえ", "kana": "いいえ", "romaji": "iie", "altRomaji": [] },
+      { "kanji": "日本", "kana": "にほん", "romaji": "nihon", "altRomaji": ["nippon"] },
+      { "kanji": "北海道", "kana": "ほっかいどう", "romaji": "hokkaidou", "altRomaji": ["hokkaido"] },
+      { "kanji": "沖縄", "kana": "おきなわ", "romaji": "okinawa", "altRomaji": [] },
+      { "kanji": "梅雨", "kana": "つゆ", "romaji": "tsuyu", "altRomaji": ["tuyu"] },
+      { "kanji": "台風", "kana": "たいふう", "romaji": "taifuu", "altRomaji": ["taifu"] },
+      { "kanji": "季節", "kana": "きせつ", "romaji": "kisetsu", "altRomaji": ["kisetu"] },
+      { "kanji": "夏", "kana": "なつ", "romaji": "natsu", "altRomaji": ["natu"] },
+      { "kanji": "冬", "kana": "ふゆ", "romaji": "fuyu", "altRomaji": [] },
+      { "kanji": "春", "kana": "はる", "romaji": "haru", "altRomaji": [] },
+      { "kanji": "秋", "kana": "あき", "romaji": "aki", "altRomaji": [] },
+      { "kanji": "食べ物", "kana": "たべもの", "romaji": "tabemono", "altRomaji": [] },
+      { "kanji": "飲み物", "kana": "のみもの", "romaji": "nomimono", "altRomaji": [] },
+      { "kanji": "魚", "kana": "さかな", "romaji": "sakana", "altRomaji": [] },
+      { "kanji": "肉", "kana": "にく", "romaji": "niku", "altRomaji": [] },
+      { "kanji": "野菜", "kana": "やさい", "romaji": "yasai", "altRomaji": [] },
+      { "kanji": "果物", "kana": "くだもの", "romaji": "kudamono", "altRomaji": [] }
+    ];
 
     let currentWord = null;
     let timeLimit = null;
@@ -239,7 +240,7 @@
     }
 
     function startGame() {
-      // 単語リストが空の場合は開始しない（通常は埋め込みなので起こらないが念のため）
+      // 単語リストが空の場合は開始しない
       if (words.length === 0) {
         kanjiEl.textContent = "単語データがありません。";
         kanaEl.textContent = "スクリプト内の単語リストを確認してください。";
