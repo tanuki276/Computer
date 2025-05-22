@@ -1,68 +1,74 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ローマ字タイピング練習</title>
-<link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本語タイピング練習</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="container">
-<div id="gameCard" class="game-card">
-<h1 class="game-title">ローマ字タイピング練習</h1>
-<div id="wordDisplay">
-<p id="kanji" class="kanji-text">スタートボタンを押して開始！</p>
-<p id="kana" class="kana-text"></p>
-</div>
-<div id="typedFeedback" class="typed-feedback"></div>
-<input type="text" id="romajiInput" class="romaji-input" placeholder="ローマ字を入力" disabled>
-<div class="game-status">
-<span id="timerDisplay" class="status-item timer-display"></span>
-<span id="scoreDisplay" class="status-item score-display">スコア: 0</span>
-</div>
-<button id="startGameButton" class="btn primary-btn">ゲームスタート</button>
-<button id="settingsButton" class="btn secondary-btn">設定</button>
-</div>
-<div id="settingsPanel" class="settings-panel hidden">
-<h2>設定</h2>
-<div class="setting-group">
-<label for="wordCategorySettings">カテゴリ:</label>
-<select id="wordCategorySettings" class="select-box">
-<option value="data/words.json">基本単語</option>
-<option value="data/animals.json">動物</option>
-<option value="data/places.json">場所</option>
-<option value="data/foods.json">食べ物</option>
-<option value="data/verbs.json">動詞</option>
-</select>
-</div>
-<div class="setting-group">
-<label for="timeModeSettings">時間制限:</label>
-<select id="timeModeSettings" class="select-box">
-<option value="none">なし</option>
-<option value="30">30秒</option>
-<option value="60">60秒</option>
-<option value="custom">カスタム</option>
-<option value="reset">成功でリセット</option>
-</select>
-<div id="customSecondsWrapperSettings" class="custom-seconds-wrapper hidden">
-<input type="number" id="customSecondsSettings" class="input-number" value="30" min="1"> 秒
-</div>
-</div>
-<button id="saveSettingsButton" class="btn primary-btn">設定を保存</button>
-<button id="closeSettingsButton" class="btn secondary-btn">閉じる</button> 
-</div>
-<div id="resultModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="resultModalTitle">
-<div class="modal-content">
-<h2 id="resultModalTitle" class="modal-title">ゲーム結果</h2>
-<p>最終スコア: <span id="finalScore" class="result-score"></span></p>
-<p>正解数: <span id="correctWords" class="result-count"></span></p>
-<p>ミスタイプ数: <span id="mistypedChars" class="result-count"></span></p>
-<button id="closeResultButton" class="btn primary-btn">閉じる</button>
-</div>
-</div>
-</div>
-<div id="overlay" class="overlay hidden" aria-hidden="true"></div>
-<script src="script.js"></script>
+    <div class="container">
+        <div id="gameCard" class="game-card">
+            <h1 class="game-title">日本語タイピング練習</h1>
+            <div id="wordDisplay">
+                <p id="kanji" class="kanji-text">スタートボタンを押して開始！</p>
+                <p id="kana" class="kana-text"></p>
+            </div>
+            <div id="typedFeedback" class="typed-feedback"></div>
+            <input type="text" id="romajiInput" class="romaji-input" placeholder="ローマ字を入力" disabled>
+
+            <div class="game-status">
+                <span id="timerDisplay" class="status-item timer-display"></span>
+                <span id="scoreDisplay" class="status-item score-display">スコア: 0</span>
+            </div>
+
+            <button id="startGameButton" class="btn primary-btn">ゲームスタート</button>
+            <button id="settingsButton" class="btn secondary-btn">設定</button>
+        </div>
+
+        <div id="settingsPanel" class="settings-panel hidden">
+            <h2>設定</h2>
+            <div class="setting-group">
+                <label for="wordCategorySettings">カテゴリ:</label>
+                <select id="wordCategorySettings" class="select-box">
+                    <option value="general.json">一般単語</option>
+                    <option value="animals.json">動物</option>
+                    <option value="foods.json">食べ物</option>
+                    <option value="buildings.json">建物</option>
+                    <option value="difficult_words.json">難解単語</option>
+                    </select>
+            </div>
+            <div class="setting-group">
+                <label for="timeModeSettings">時間制限:</label>
+                <select id="timeModeSettings" class="select-box">
+                    <option value="none">なし</option>
+                    <option value="30">30秒</option>
+                    <option value="60">60秒</option>
+                    <option value="custom">カスタム</option>
+                    <option value="reset">成功でリセット</option>
+                </select>
+                <div id="customSecondsWrapperSettings" class="custom-seconds-wrapper hidden">
+                    <input type="number" id="customSecondsSettings" class="input-number" value="30" min="1"> 秒
+                </div>
+            </div>
+            <button id="saveSettingsButton" class="btn primary-btn">設定を保存</button>
+            <button id="closeSettingsButton" class="btn secondary-btn">閉じる</button>
+        </div>
+
+        <div id="resultModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="resultModalTitle">
+            <div class="modal-content">
+                <h2 id="resultModalTitle" class="modal-title">ゲーム結果</h2>
+                <p>最終スコア: <span id="finalScore" class="result-score"></span></p>
+                <p>正解数: <span id="correctWords" class="result-count"></span></p>
+                <p>ミスタイプ数: <span id="mistypedChars" class="result-count"></span></p>
+                <button id="closeResultButton" class="btn primary-btn">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay" class="overlay hidden" aria-hidden="true"></div>
+
+    <script src="script.js"></script>
 </body>
 </html>
