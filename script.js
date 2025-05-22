@@ -187,8 +187,9 @@ document.addEventListener("DOMContentLoaded", () => {
         inputEl.classList.remove("correct-input", "incorrect-input"); // 入力欄のスタイルをリセット
 
         showResultModal(); // 結果モーダルを表示
-        // ゲーム終了後、次のゲームに備えて単語リストをリセット（元のカテゴリで再読み込み）
-        fetchData(wordCategorySettingsEl.value);
+
+        // ここでは、ゲーム終了後に自動的に単語をリセットしない
+        // 設定保存時にのみ新しいカテゴリをロードするように変更
     }
 
     /**
@@ -215,6 +216,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (show) { // 設定パネルを表示する場合
             clearInterval(timer); // ゲームタイマーを停止（ゲーム中の場合）
+            // ゲーム中の単語表示を初期状態に戻す
+            kanjiEl.textContent = "設定を変更してね！";
+            kanaEl.textContent = "";
+            inputEl.disabled = true;
 
             // 設定パネルの入力要素に現在のゲーム設定値を反映
             // HTMLのwordCategorySettingsEl, timeModeSettingsEl, customSecondsSettingsElは、
@@ -226,6 +231,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // カスタム秒数入力欄の表示/非表示を更新 (設定パネル内の要素に対して)
             timeModeSettingsEl.dispatchEvent(new Event('change'));
+        } else { // 設定パネルを閉じる場合
+            // ゲームカードの表示を再開し、タイマー表示をリセット
+            kanjiEl.textContent = "スタートボタンを押して開始！";
+            kanaEl.textContent = "";
+            timerDisplay.textContent = ""; // タイマー表示もクリア
+            scoreDisplay.textContent = "スコア: 0"; // スコアもリセット
         }
     }
 
@@ -251,25 +262,42 @@ document.addEventListener("DOMContentLoaded", () => {
     settingsButton.addEventListener("click", () => toggleSettings(true));
 
     // 設定保存ボタンクリックで設定を保存し、ゲームをリセット
-    saveSettingsButton.addEventListener("click", () => {
-        // 設定パネルで選択された値を、ゲーム側の設定に適用
-        // ゲーム側の要素（ここではidで取得）に直接値をセットすることで、
-        // 次のゲーム開始時に新しい設定が反映される
-        document.getElementById("wordCategory").value = wordCategorySettingsEl.value;
-        document.getElementById("timeMode").value = timeModeSettingsEl.value;
-        document.getElementById("customSeconds").value = customSecondsSettingsEl.value;
+    saveSettingsButton.addEventListener("click", async () => { // async を追加
+        // 選択されたカテゴリのJSONファイル名を直接取得
+        const selectedCategoryFile = wordCategorySettingsEl.value;
 
-        toggleSettings(false); // 設定パネルを閉じる
-        stopGame(); // ゲームを停止状態に戻し、新しいカテゴリで単語データを読み込み直す
+        // 新しいカテゴリの単語データを確実に読み込む
+        await fetchData(selectedCategoryFile); // await を追加してデータ読み込み完了を待つ
+
+        // 設定パネルを閉じ、ゲームカードを表示
+        toggleSettings(false);
+
+        // ゲームの初期状態表示に戻す
+        kanjiEl.textContent = "スタートボタンを押して開始！";
+        kanaEl.textContent = "";
+        inputEl.value = "";
+        typedFeedbackEl.innerHTML = "";
+        inputEl.disabled = true;
+        timerDisplay.textContent = "";
+        scoreDisplay.textContent = "スコア: 0";
+        score = 0; // スコアをリセット
+        correctWordCount = 0;
+        mistypeCount = 0;
     });
 
     // 設定閉じるボタンクリックで設定パネルを閉じる（保存なし）
     closeSettingsButton.addEventListener("click", () => {
-        toggleHidden(settingsPanel, true); // 設定パネルを非表示
-        toggleHidden(gameCard, false);     // ゲームカードを表示
-        // オーバーレイの表示状態を再評価（結果モーダルが出ていなければ非表示にする）
-        const shouldShowOverlay = !resultModal.classList.contains("hidden");
-        toggleHidden(overlay, !shouldShowOverlay);
+        toggleSettings(false); // 設定パネルを閉じる
+        // 既存の単語データがあれば、そのままゲーム開始待機状態にする
+        if (words.length > 0) {
+            kanjiEl.textContent = "スタートボタンを押して開始！";
+            kanaEl.textContent = "";
+            inputEl.disabled = true;
+        } else {
+            // 単語データがない場合 (初回ロード時など) は、読み込みを促す
+            kanjiEl.textContent = "単語データが読み込めてないよ";
+            kanaEl.textContent = "カテゴリーを選択して！";
+        }
     });
 
     // 設定パネルの時間制限モード変更時、カスタム秒数入力欄の表示を切り替える
