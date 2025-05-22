@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => {
                 kanjiEl.textContent = "データ読み込み失敗";
-                kanaEl.textContent = `${categoryFile} が見つからないか、形式が正しくありません。`;
+                kanaEl.textContent = `${categoryFile} が読み込めないよ`;
                 console.error(`Error loading ${categoryFile}:`, err);
                 inputEl.disabled = true; // エラー時は入力無効
             });
@@ -182,8 +182,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // ゲーム開始
     function startGame() {
         if (words.length === 0) {
-            kanjiEl.textContent = "単語データが読み込まれていません。";
-            kanaEl.textContent = "カテゴリを選択するか、JSONファイルを確認してください。";
+            kanjiEl.textContent = "単語データが読み込れてないよ";
+            kanaEl.textContent = "カテゴリーを選択して！";
             return;
         }
 
