@@ -1,0 +1,335 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #f0f4f8, #c8d8e8);
+    color: #333;
+    overflow: hidden;
+}
+
+.container {
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    text-align: center;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    font-size: 2.2em;
+}
+
+.game-card {
+    background-color: #e9f0f6;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+.timer {
+    font-size: 1.8em;
+    color: #e74c3c;
+    background-color: #ffe0e0;
+    padding: 8px 15px;
+    border-radius: 8px;
+    min-width: 120px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.score {
+    font-size: 1.8em;
+    color: #27ae60;
+    background-color: #e0ffe0;
+    padding: 8px 15px;
+    border-radius: 8px;
+    min-width: 120px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.word-display {
+    margin-bottom: 30px;
+}
+
+.kanji {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    min-height: 1.5em; /* 漢字が表示されていないときの高さを確保 */
+}
+
+.kana {
+    font-size: 1.5em;
+    color: #555;
+    min-height: 1.2em; /* かなが表示されていないときの高さを確保 */
+}
+
+.input-area {
+    margin-bottom: 30px;
+    position: relative;
+}
+
+#romajiInput {
+    width: calc(100% - 20px);
+    padding: 15px 10px;
+    font-size: 1.4em;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+    text-align: center; /* 入力文字を中央揃え */
+}
+
+#romajiInput:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+}
+
+#romajiInput.correct-input {
+    border-color: #2ecc71;
+}
+
+#romajiInput.incorrect-input {
+    border-color: #e74c3c;
+}
+
+.typed-feedback {
+    position: absolute;
+    top: 50%; /* inputの中央に合わせる */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.4em;
+    font-family: monospace; /* 等幅フォントで文字のずれを防ぐ */
+    white-space: pre; /* 半角スペースを保持 */
+    pointer-events: none; /* クリックイベントを無効化 */
+    z-index: 1; /* inputの上に表示 */
+    padding: 15px 10px; /* inputと同じパディング */
+    box-sizing: border-box;
+    width: calc(100% - 20px);
+    text-align: center;
+    color: transparent; /* 通常時は文字を透明に */
+}
+
+.typed-feedback span.correct {
+    color: #27ae60;
+}
+
+.typed-feedback span.incorrect {
+    color: #e74c3c;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.button {
+    padding: 12px 25px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.start-button {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.start-button:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+}
+
+.settings-button {
+    background-color: #3498db;
+    color: white;
+}
+
+.settings-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+.button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* 設定パネル */
+.settings-panel {
+    background-color: #e9f0f6;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+    text-align: left;
+}
+
+.setting-item {
+    margin-bottom: 20px;
+}
+
+.settings-panel label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.settings-panel select,
+.settings-panel input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.settings-panel .button {
+    width: auto;
+    display: block;
+    margin: 20px auto 0;
+    background-color: #f39c12;
+    color: white;
+}
+
+.settings-panel .button:hover {
+    background-color: #e67e22;
+}
+
+/* 共通のhiddenクラス */
+.hidden {
+    display: none !important;
+}
+
+/* オーバーレイ */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+/* リザルトモーダル */
+.result-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 450px;
+    box-sizing: border-box;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content h2 {
+    color: #34495e;
+    font-size: 2.5em;
+    margin-bottom: 25px;
+}
+
+.modal-content p {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.modal-content span {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 1.2em;
+}
+
+#closeResultButton {
+    background-color: #3498db;
+    color: white;
+    margin-top: 30px;
+    padding: 12px 30px;
+    font-size: 1.2em;
+}
+
+#closeResultButton:hover {
+    background-color: #2980b9;
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    .kanji {
+        font-size: 2em;
+    }
+    .kana {
+        font-size: 1.2em;
+    }
+    #romajiInput {
+        font-size: 1.2em;
+        padding: 12px 10px;
+    }
+    .timer, .score {
+        font-size: 1.4em;
+        padding: 6px 10px;
+    }
+    .button {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+    .modal-content h2 {
+        font-size: 2em;
+    }
+    .modal-content p {
+        font-size: 1.2em;
+    }
+}
