@@ -1,4 +1,3 @@
-// script.js
 document.addEventListener("DOMContentLoaded", () => {
     // UI要素の取得
     const kanjiEl = document.getElementById("kanji");
@@ -18,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const customSecondsWrapperSettings = document.getElementById("customSecondsWrapperSettings");
     const customSecondsSettingsEl = document.getElementById("customSecondsSettings");
     const saveSettingsButton = document.getElementById("saveSettingsButton");
-    const closeSettingsButton = document.getElementById("closeSettingsButton"); // 新たに追加した閉じるボタン
+    const closeSettingsButton = document.getElementById("closeSettingsButton");
 
     // 結果モーダルの要素
     const resultModal = document.getElementById("resultModal");
@@ -39,12 +38,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let secondsLeft = 0;
     let score = 0;
     let correctWordCount = 0;
-    let mistypeCount = 0; // ミスタイプした文字数ではなく、不正解の単語数として使用
+    let mistypeCount = 0; // 不正解の単語数として使用
 
     // --- ヘルパー関数 ---
 
     /**
-     * 指定された要素にhiddenクラスを追加・削除する
+     * 指定された要素にhiddenクラスを追加・削除します。
+     * `hidden`クラスはCSSで`display: none;`を設定しています。
      * @param {HTMLElement} element - 対象のDOM要素
      * @param {boolean} hide - trueなら隠す (hiddenクラスを追加)、falseなら表示 (hiddenクラスを削除)
      */
@@ -59,8 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- データ読み込み ---
 
     /**
-     * 指定されたカテゴリの単語データを読み込む
-     * @param {string} categoryFile - JSONファイルのパス
+     * 指定されたカテゴリの単語データを読み込みます。
+     * JSONファイルが最高ディレクトリに配置されていることを想定しています。
+     * @param {string} categoryFile - JSONファイルのファイル名（例: "general.json"）
      */
     async function fetchData(categoryFile) {
         kanjiEl.textContent = "データ読み込み中...";
@@ -69,13 +70,14 @@ document.addEventListener("DOMContentLoaded", () => {
         wordsQueue = []; // キューもクリア
 
         try {
+            // JSONファイルが最高ディレクトリにあるため、ファイル名のみでfetchします
             const res = await fetch(categoryFile);
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);
             }
             const data = await res.json();
             words = data;
-            // データ読み込み後、ゲーム開始前の状態にする
+            // データ読み込み後、ゲーム開始前の初期表示状態に戻します
             kanjiEl.textContent = "スタートボタンを押して開始！";
             kanaEl.textContent = "";
             inputEl.disabled = true;
@@ -90,7 +92,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- ゲームの管理 ---
 
     /**
-     * ゲームを開始する
+     * ゲームを開始します。
+     * 単語データの確認、ゲーム状態のリセット、タイマーの設定、最初の単語の表示を行います。
      */
     function startGame() {
         if (words.length === 0) {
@@ -99,12 +102,12 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // 設定パネルが開いていたら閉じる
+        // 設定パネルが開いていたら閉じます
         if (!settingsPanel.classList.contains("hidden")) {
             toggleSettings(false); // 設定パネルを閉じる
         }
 
-        // ゲーム状態のリセット
+        // ゲーム状態をリセット
         score = 0;
         correctWordCount = 0;
         mistypeCount = 0;
@@ -113,14 +116,14 @@ document.addEventListener("DOMContentLoaded", () => {
         inputEl.classList.remove("correct-input", "incorrect-input");
         typedFeedbackEl.innerHTML = '';
         inputEl.disabled = false;
-        inputEl.focus();
+        inputEl.focus(); // 入力欄にフォーカス
 
         // 単語キューをシャッフルしてセット
         wordsQueue = [...words].sort(() => Math.random() - 0.5);
 
         setNewWord(); // 最初の単語を設定
 
-        // 時間制限の設定 (設定パネルの値を使用)
+        // 時間制限の設定 (設定パネルで選択された値を使用)
         const mode = timeModeSettingsEl.value;
         if (mode === "custom" || mode === "reset") {
             timeLimit = parseInt(customSecondsSettingsEl.value) || 30;
@@ -151,7 +154,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * 次の単語を設定する
+     * 次の単語をキューから取得し、画面に表示します。
+     * キューが空の場合、ゲームを終了します。
      */
     function setNewWord() {
         if (wordsQueue.length === 0) {
@@ -159,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
             stopGame();
             return;
         }
-        currentWord = wordsQueue.shift(); // キューから単語を取り出す
+        currentWord = wordsQueue.shift(); // キューの先頭から単語を取り出す
         kanjiEl.textContent = currentWord.kanji;
         kanaEl.textContent = currentWord.kana;
         inputEl.value = ""; // 入力欄をクリア
@@ -169,7 +173,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * ゲームを終了する
+     * ゲームを終了します。
+     * タイマーの停止、入力の無効化、結果モーダルの表示、単語リストのリセットを行います。
      */
     function stopGame() {
         clearInterval(timer); // タイマーを停止
@@ -187,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * スコア表示を更新する
+     * スコア表示を更新します。
      */
     function updateScoreDisplay() {
         scoreDisplay.textContent = `スコア: ${score}`;
@@ -196,7 +201,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- UI/UXインタラクション ---
 
     /**
-     * 設定パネルの表示/非表示を切り替える
+     * 設定パネルの表示/非表示を切り替えます。
+     * ゲームカードとオーバーレイの表示状態も同時に管理します。
      * @param {boolean} show - trueなら設定パネルを表示、falseなら非表示
      */
     function toggleSettings(show) {
@@ -208,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleHidden(overlay, !shouldShowOverlay);
 
         if (show) { // 設定パネルを表示する場合
-            clearInterval(timer); // ゲームタイマーを停止
+            clearInterval(timer); // ゲームタイマーを停止（ゲーム中の場合）
 
             // 設定パネルの入力要素に現在のゲーム設定値を反映
             // HTMLのwordCategorySettingsEl, timeModeSettingsEl, customSecondsSettingsElは、
@@ -224,7 +230,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * リザルトモーダルを表示する
+     * ゲーム結果モーダルを表示します。
+     * 最終スコア、正解数、ミスタイプ数を表示します。
      */
     function showResultModal() {
         finalScoreEl.textContent = score;
@@ -237,13 +244,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- イベントリスナー ---
 
-    // ゲームスタートボタン
+    // ゲームスタートボタンクリックでゲームを開始
     startGameButton.addEventListener("click", startGame);
 
-    // 設定ボタン
-    settingsButton.addEventListener("click", () => toggleSettings(true)); // 設定パネルを表示
+    // 設定ボタンクリックで設定パネルを表示
+    settingsButton.addEventListener("click", () => toggleSettings(true));
 
-    // 設定保存ボタン
+    // 設定保存ボタンクリックで設定を保存し、ゲームをリセット
     saveSettingsButton.addEventListener("click", () => {
         // 設定パネルで選択された値を、ゲーム側の設定に適用
         // ゲーム側の要素（ここではidで取得）に直接値をセットすることで、
@@ -256,19 +263,19 @@ document.addEventListener("DOMContentLoaded", () => {
         stopGame(); // ゲームを停止状態に戻し、新しいカテゴリで単語データを読み込み直す
     });
 
-    // 設定閉じるボタン (保存せずに閉じる)
+    // 設定閉じるボタンクリックで設定パネルを閉じる（保存なし）
     closeSettingsButton.addEventListener("click", () => {
         toggleSettings(false); // 設定パネルを閉じる
     });
 
-    // 設定パネルの時間制限モードの変更時にカスタム秒数入力欄の表示を切り替える
+    // 設定パネルの時間制限モード変更時、カスタム秒数入力欄の表示を切り替える
     timeModeSettingsEl.addEventListener("change", () => {
         toggleHidden(customSecondsWrapperSettings, !(timeModeSettingsEl.value === "custom" || timeModeSettingsEl.value === "reset"));
     });
 
-    // 入力イベント (リアルタイムフィードバックと正誤判定)
+    // 入力イベント（リアルタイムフィードバックと正誤判定）
     inputEl.addEventListener("input", () => {
-        if (!currentWord || inputEl.disabled) return;
+        if (!currentWord || inputEl.disabled) return; // 単語が設定されていない、または入力無効なら何もしない
 
         const typedValue = inputEl.value;
         const targetRomaji = currentWord.romaji;
@@ -291,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         typedFeedbackEl.innerHTML = feedbackHtml;
 
-        // 入力欄のボーダー色変更
+        // 入力欄のボーダー色変更（視覚フィードバック）
         if (typedValue.length === 0) {
             inputEl.classList.remove("correct-input", "incorrect-input");
         } else if (isCorrectSoFar && typedValue.length > 0) {
@@ -305,27 +312,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Enterキーでの判定
     inputEl.addEventListener("keydown", (e) => {
-        if (inputEl.disabled) return;
+        if (inputEl.disabled) return; // 入力無効なら何もしない
 
         if (e.key === "Enter") {
-            const typedRomaji = inputEl.value.toLowerCase().trim();
+            const typedRomaji = inputEl.value.toLowerCase().trim(); // 入力値を小文字にし、空白を除去
             const targetRomaji = currentWord.romaji.toLowerCase();
+            // altRomajiがあれば、それも小文字にして配列に変換
             const altRomajiLower = currentWord.altRomaji ? currentWord.altRomaji.map(alt => alt.toLowerCase()) : [];
-            const isAltRomajiMatch = altRomajiLower.includes(typedRomaji);
+            const isAltRomajiMatch = altRomajiLower.includes(typedRomaji); // 代替ローマ字との一致を確認
 
             if (typedRomaji === targetRomaji || isAltRomajiMatch) {
+                // 正解の場合
                 score++;
                 correctWordCount++;
                 updateScoreDisplay();
                 setNewWord(); // 次の単語へ
 
-                // 制限時間リセットモード
+                // 制限時間リセットモードの場合、タイマーをリセット
                 if (timeModeSettingsEl.value === "reset" && timeLimit !== null) {
                     secondsLeft = timeLimit;
                     timerDisplay.textContent = `残り: ${secondsLeft} 秒`;
                 }
 
-                // 正解時の視覚フィードバック
+                // 正解時の視覚フィードバックアニメーション
                 kanjiEl.classList.add('correct-word-animation');
                 kanaEl.classList.add('correct-word-animation');
                 inputEl.classList.remove("incorrect-input"); // 不正解の赤枠を消す
@@ -333,13 +342,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 setTimeout(() => {
                     kanjiEl.classList.remove('correct-word-animation');
                     kanaEl.classList.remove('correct-word-animation');
-                    inputEl.classList.remove("correct-input"); // 次の単語で緑枠も消す
-                }, 300);
+                    inputEl.classList.remove("correct-input"); // 次の単語に備えて緑枠も消す
+                }, 300); // 300ミリ秒後にアニメーションクラスと色を削除
             } else {
-                // 不正解時の処理
+                // 不正解の場合
                 mistypeCount++; // 不正解単語数をカウント
-                inputEl.classList.add("incorrect-input"); // 不正解時に赤枠にする
-                // 不正解時にも入力欄とフィードバックをリセットすることで、再入力を促す
+                inputEl.classList.add("incorrect-input"); // 入力欄を赤枠にする
+                // 不正解時にも入力欄とフィードバックをリセットすることで、再入力を促すUX
                 inputEl.value = "";
                 typedFeedbackEl.innerHTML = '';
             }
@@ -358,16 +367,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // --- 初期化 ---
-    // ページ読み込み時にデフォルトのカテゴリの単語を読み込む
-    // wordCategorySettingsEl を使用して、設定パネルの初期値から読み込む
+    // ページ読み込み時に、設定パネルで現在選択されているカテゴリの単語を読み込みます。
+    // デフォルトでは"general.json"が選択されているはずです。
     fetchData(wordCategorySettingsEl.value);
 
-    // ページの初期表示状態を設定
+    // ページの初期表示状態を設定します。
+    // ゲームカードは最初から表示され、設定パネル、結果モーダル、オーバーレイは非表示です。
     toggleHidden(gameCard, false);      // ゲームカードは最初に表示
     toggleHidden(settingsPanel, true);  // 設定パネルは最初から非表示
     toggleHidden(resultModal, true);    // 結果モーダルは最初から非表示
     toggleHidden(overlay, true);        // オーバーレイは最初から非表示
 
-    // 初期状態でカスタム秒数入力欄の表示を更新（設定パネル用）
+    // 設定パネルのカスタム秒数入力欄の初期表示を更新します。
+    // (例: "カスタム"が選択されていれば表示、そうでなければ非表示)
     timeModeSettingsEl.dispatchEvent(new Event('change'));
 });
