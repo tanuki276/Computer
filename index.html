@@ -71,7 +71,13 @@
     </div>
 
     <div id="overlay" class="overlay hidden" aria-hidden="true"></div>
-
-    <script src="script.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log('Service Worker 登録成功:', reg.scope))
+    .catch(err => console.error('Service Worker 登録失敗:', err));
+}
+</script>
+ <script src="script.js"></script>
 </body>
 </html>
