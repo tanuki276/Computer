@@ -265,7 +265,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 設定閉じるボタンクリックで設定パネルを閉じる（保存なし）
     closeSettingsButton.addEventListener("click", () => {
-        toggleSettings(false); // 設定パネルを閉じる
+        toggleHidden(settingsPanel, true); // 設定パネルを非表示
+        toggleHidden(gameCard, false);     // ゲームカードを表示
+        // オーバーレイの表示状態を再評価（結果モーダルが出ていなければ非表示にする）
+        const shouldShowOverlay = !resultModal.classList.contains("hidden");
+        toggleHidden(overlay, !shouldShowOverlay);
     });
 
     // 設定パネルの時間制限モード変更時、カスタム秒数入力欄の表示を切り替える
