@@ -1,335 +1,79 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>ローマ字タイピング練習</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom right, #2c3e50, #3498db);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      color: #fff;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 30px 25px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-      width: 90%;
-      max-width: 500px;
-      text-align: center;
-      backdrop-filter: blur(10px);
-      margin-bottom: 20px;
-    }
-
-    .kanji { font-size: 56px; font-weight: bold; margin-bottom: 10px; }
-    .kana { font-size: 24px; color: #dcdcdc; margin-bottom: 30px; }
-
-    input[type="text"] {
-      font-size: 24px;
-      padding: 12px 20px;
-      width: 100%;
-      border: none;
-      border-radius: 10px;
-      outline: none;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-
-    input[type="text"]:focus {
-      box-shadow: 0 0 10px 2px #74b9ff;
-    }
-
-    .settings {
-      display: none; /* 初期状態で非表示 */
-      flex-direction: column;
-      gap: 10px;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 20px;
-      border-radius: 15px;
-      position: absolute; /* 歯車アイコンで開くため */
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 100; /* 最前面に表示 */
-    }
-
-    select, input[type="number"] {
-      font-size: 16px;
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: none;
-      width: 200px;
-    }
-
-    .timer {
-      margin-top: 10px;
-      font-size: 20px;
-      color: #ffecb3;
-    }
-
-    .settings-icon {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 28px;
-      color: #fff;
-      cursor: pointer;
-      z-index: 101; /* 常に最前面に表示 */
-    }
-
-    .button-container {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .button-container button {
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-      background-color: #007bff;
-      color: #fff;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      transition: background-color 0.3s ease;
-    }
-
-    .button-container button:hover {
-      background-color: #0056b3;
-    }
-
-    /* 終了ボタンのスタイル */
-    .button-container button.stop-button {
-      background-color: #dc3545;
-    }
-
-    .button-container button.stop-button:hover {
-      background-color: #c82333;
-    }
-
-    /* タイピング画面が非表示のときに背景を暗くするオーバーレイ */
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
-      z-index: 99;
-      display: none; /* 初期状態で非表示 */
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ローマ字タイピング練習</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <h1>ローマ字タイピング練習</h1>
 
-  <i class="fas fa-cog settings-icon" onclick="toggleSettings()"></i>
+        <div id="gameCard" class="game-card">
+            <div class="stats">
+                <div id="timerDisplay" class="timer"></div>
+                <div id="scoreDisplay" class="score">スコア: 0</div>
+            </div>
+            <div class="word-display">
+                <div id="kanji" class="kanji">スタートボタンを押して開始！</div>
+                <div id="kana" class="kana"></div>
+            </div>
+            <div class="input-area">
+                <input type="text" id="romajiInput" placeholder="ローマ字で入力してください" disabled>
+                <div id="typedFeedback" class="typed-feedback"></div>
+            </div>
+            <div class="controls">
+                <button id="startGameButton" class="button start-button">スタート</button>
+                <button id="settingsButton" class="button settings-button">設定</button>
+            </div>
+        </div>
 
-  <div class="settings" id="settingsPanel">
-    <h3>設定</h3>
-    <label>制限時間:
-      <select id="timeMode">
-        <option value="none">なし</option>
-        <option value="custom">カスタム（制限時間内で何問か）</option>
-        <option value="reset">リセット（1問正解ごとに制限時間が戻る）</option>
-      </select>
-    </label>
-    <input type="number" id="customSeconds" placeholder="秒数" min="1" max="300" style="display:none;">
-    <button onclick="toggleSettings()">閉じる</button>
-  </div>
+        <div id="settingsPanel" class="settings-panel hidden">
+            <h2>設定</h2>
+            <div class="setting-item">
+                <label for="timeMode">制限時間:</label>
+                <select id="timeMode">
+                    <option value="none">制限なし</option>
+                    <option value="30">30秒</option>
+                    <option value="60">60秒</option>
+                    <option value="custom">カスタム</option>
+                    <option value="reset">正解でリセット</option>
+                </select>
+            </div>
+            <div class="setting-item" id="customSecondsWrapper" style="display: none;">
+                <label for="customSeconds">秒数:</label>
+                <input type="number" id="customSeconds" value="30" min="5" max="300">
+            </div>
+            <div class="setting-item">
+                <label for="wordCategory">単語カテゴリ:</label>
+                <select id="wordCategory">
+                    <option value="general.json">一般</option>
+                    <option value="animals.json">動物</option>
+                    <option value="countries.json">国</option>
+                    <option value="buildings.json">建物</option>
+                    <option value="difficult_words.json">難しい言葉</option>
+                    <option value="foods.json">食べ物</option>
+                </select>
+            </div>
+            <div class="controls">
+                <button id="saveSettingsButton" class="button">設定を保存して閉じる</button>
+            </div>
+        </div>
 
-  <div class="overlay" id="overlay"></div>
+        <div id="overlay" class="overlay hidden"></div>
 
-  <div class="card" id="gameCard">
-    <div class="kanji" id="kanji">スタートボタンを押して開始！</div>
-    <div class="kana" id="kana"></div>
-    <input type="text" id="romajiInput" placeholder="ローマ字で入力" disabled>
-  </div>
+        <div id="resultModal" class="result-modal hidden">
+            <div class="modal-content">
+                <h2>結果</h2>
+                <p>スコア: <span id="finalScore">0</span></p>
+                <p>正解数: <span id="correctWords">0</span></p>
+                <p>ミスタイプ数: <span id="mistypedChars">0</span></p>
+                <button id="closeResultButton" class="button">閉じる</button>
+            </div>
+        </div>
 
-  <div class="button-container">
-    <button onclick="startGame()">スタート</button>
-    <button class="stop-button" onclick="stopGame()">終了</button>
-  </div>
-
-  <div class="timer" id="timerDisplay"></div>
-  <div class="score" id="scoreDisplay"></div>
-
-  <script>
-    const kanjiEl = document.getElementById("kanji");
-    const kanaEl = document.getElementById("kana");
-    const inputEl = document.getElementById("romajiInput");
-    const timeModeEl = document.getElementById("timeMode");
-    const customSecondsEl = document.getElementById("customSeconds");
-    const timerDisplay = document.getElementById("timerDisplay");
-    const settingsPanel = document.getElementById("settingsPanel");
-    const gameCard = document.getElementById("gameCard");
-    const overlay = document.getElementById("overlay");
-    const scoreDisplay = document.getElementById("scoreDisplay"); // スコア表示要素を追加
-
-    let words = []; // words.json から読み込むため空で初期化
-    let currentWord = null;
-    let timeLimit = null; // 設定された制限時間（初期値）
-    let timer = null;
-    let secondsLeft = 0; // 現在の残り時間
-    let score = 0; // スコアを初期化
-
-    // UI切り替え: 制限時間モード
-    timeModeEl.addEventListener("change", () => {
-      customSecondsEl.style.display = (timeModeEl.value === "custom" || timeModeEl.value === "reset") ? "block" : "none";
-    });
-
-    // データ読み込み
-    fetch("words.json")
-      .then(res => res.json())
-      .then(data => { words = data; })
-      .catch(err => {
-        kanjiEl.textContent = "データ読み込み失敗";
-        kanaEl.textContent = "words.json が見つからないか、形式が正しくありません。";
-        console.error(err);
-      });
-
-    // 設定パネルの表示/非表示を切り替える関数
-    function toggleSettings() {
-      if (settingsPanel.style.display === "none" || settingsPanel.style.display === "") {
-        settingsPanel.style.display = "flex";
-        gameCard.style.display = "none"; // ゲーム画面を非表示
-        overlay.style.display = "block"; // オーバーレイを表示
-        clearInterval(timer); // ゲーム中に設定を開いたらタイマーを停止
-      } else {
-        settingsPanel.style.display = "none";
-        gameCard.style.display = "block"; // ゲーム画面を再表示
-        overlay.style.display = "none"; // オーバーレイを非表示
-        // 設定を閉じた際に、単語データがまだ読み込まれていなければエラー表示
-        if (words.length === 0 && kanjiEl.textContent === "データ読み込み失敗") {
-            // 何もしない。既にエラーメッセージが表示されているため
-        } else if (words.length === 0) {
-            // まだ読み込み中で表示が初期状態の場合
-            kanjiEl.textContent = "データ読み込み中...";
-            kanaEl.textContent = "";
-        } else {
-            // 正常に読み込まれている場合
-            kanjiEl.textContent = "スタートボタンを押して開始！";
-            kanaEl.textContent = "";
-        }
-      }
-    }
-
-    function startGame() {
-      // 単語リストが空の場合は開始しない
-      if (words.length === 0) {
-        kanjiEl.textContent = "単語データが読み込まれていません。";
-        kanaEl.textContent = "words.json が正しく設置されているか確認してください。";
-        return;
-      }
-
-      // ゲームが既に終了状態ならリセット
-      if (inputEl.disabled) {
-        kanjiEl.textContent = "スタートボタンを押して開始！";
-        kanaEl.textContent = "";
-        timerDisplay.textContent = "";
-      }
-
-      // 設定パネルが開いている場合は閉じる
-      if (settingsPanel.style.display === "flex") {
-        toggleSettings();
-      }
-
-      // タイマー設定
-      const mode = timeModeEl.value;
-      if (mode === "custom" || mode === "reset") {
-        timeLimit = parseInt(customSecondsEl.value) || 30; // デフォルトは30秒
-      } else {
-        timeLimit = null; // 制限時間なし
-        timerDisplay.textContent = "";
-      }
-
-      setNewWord();
-      inputEl.disabled = false;
-      inputEl.value = "";
-      inputEl.focus();
-      score = 0; // ゲーム開始時にスコアをリセット
-      updateScoreDisplay(); // スコア表示を更新
-
-      // タイマー起動
-      if (timeLimit !== null) { // nullチェックで制限時間なしの場合を考慮
-        clearInterval(timer); // 既存のタイマーをクリア
-        secondsLeft = timeLimit; // 初期残り時間を設定
-        timerDisplay.textContent = `残り: ${secondsLeft} 秒`;
-
-        timer = setInterval(() => {
-          secondsLeft--;
-          timerDisplay.textContent = `残り: ${secondsLeft} 秒`;
-          if (secondsLeft <= 0) {
-            stopGame(); // 時間が来たらゲーム終了
-          }
-        }, 1000);
-      } else {
-        clearInterval(timer); // 制限時間なしの場合はタイマーを停止
-        timerDisplay.textContent = "";
-      }
-    }
-
-    function setNewWord() {
-      currentWord = words[Math.floor(Math.random() * words.length)];
-      kanjiEl.textContent = currentWord.kanji;
-      kanaEl.textContent = currentWord.kana;
-      inputEl.value = "";
-    }
-
-    function stopGame() {
-      clearInterval(timer); // タイマーを停止
-      kanjiEl.textContent = "終了！";
-      kanaEl.textContent = "";
-      inputEl.disabled = true; // 入力フィールドを無効化
-      inputEl.value = ""; // 入力フィールドをクリア
-      timerDisplay.textContent = ""; // タイマー表示をクリア
-    }
-
-    // スコア表示を更新する関数
-    function updateScoreDisplay() {
-      scoreDisplay.textContent = `スコア: ${score}`;
-    }
-
-    // Enterキーでチェック
-    inputEl.addEventListener("keydown", (e) => {
-      // inputEl.disabledがtrueの場合は何もしない (ゲーム停止中)
-      if (inputEl.disabled) return;
-
-      if (e.key === "Enter") {
-        const typedRomaji = inputEl.value.toLowerCase();
-        // 正しいローマ字、または代替ローマ字のいずれかに一致するかをチェック
-        const isAltRomajiMatch = currentWord.altRomaji && Array.isArray(currentWord.altRomaji) && currentWord.altRomaji.includes(typedRomaji);
-
-        if (typedRomaji === currentWord.romaji || isAltRomajiMatch) {
-          score++; // 正解したらスコアをインクリメント
-          updateScoreDisplay(); // スコア表示を更新
-          setNewWord(); // 次の単語を設定
-
-          // 「リセット」モードの場合、制限時間を元に戻す
-          if (timeModeEl.value === "reset" && timeLimit !== null) {
-            secondsLeft = timeLimit;
-            timerDisplay.textContent = `残り: ${secondsLeft} 秒`;
-          }
-        }
-      }
-    });
-
-    // 初期表示設定
-    stopGame(); // 初期状態でゲームを停止状態にする
-    kanjiEl.textContent = "データ読み込み中..."; // 初期メッセージ
-    scoreDisplay.textContent = "スコア: 0"; // 初期スコア表示
-  </script>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
