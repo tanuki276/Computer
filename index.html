@@ -5,19 +5,72 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>タイピングゲーム</title>
 
-  <!-- PWA & Favicon -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#2196f3">
   <link rel="icon" type="image/png" sizes="192x192" href="favicon.png?v=2">
   <link rel="apple-touch-icon" href="favicon.png">
 
-  <!-- CSS・フォント -->
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
-    <!-- （略：ゲーム画面・設定画面・モーダルなど） -->
+    <div id="gameCard" class="card">
+      <div class="header">
+        <span id="timerDisplay">残り: 0 秒</span>
+        <span id="scoreDisplay">スコア: 0</span>
+      </div>
+      <div class="word-display">
+        <div id="kanji" class="kanji">スタートボタンを押して開始！</div>
+        <div id="kana" class="kana"></div>
+      </div>
+      <div id="typedFeedback" class="typed-feedback"></div>
+      <input type="text" id="romajiInput" class="romaji-input" placeholder="ローマ字を入力">
+      <div class="buttons">
+        <button id="startGameButton" class="button primary">ゲーム開始</button>
+        <button id="settingsButton" class="button secondary">設定</button>
+      </div>
+    </div>
+
+    <div id="settingsPanel" class="card settings-panel hidden">
+      <h2>設定</h2>
+      <div class="setting-item">
+        <label for="wordCategorySettings">単語カテゴリ:</label>
+        <select id="wordCategorySettings">
+          <option value="general.json">一般語彙</option>
+          <option value="animals.json">動物</option>
+          <option value="food.json">食べ物</option>
+          </select>
+      </div>
+      <div class="setting-item">
+        <label for="timeModeSettings">時間制限:</label>
+        <select id="timeModeSettings">
+          <option value="none">制限なし</option>
+          <option value="30">30秒</option>
+          <option value="60">60秒</option>
+          <option value="reset">正解で時間リセット</option>
+          <option value="custom">カスタム</option>
+        </select>
+      </div>
+      <div id="customSecondsWrapperSettings" class="setting-item hidden">
+        <label for="customSecondsSettings">秒数 (カスタム):</label>
+        <input type="number" id="customSecondsSettings" value="30" min="10" max="300">
+      </div>
+      <div class="buttons">
+        <button id="saveSettingsButton" class="button primary">保存して戻る</button>
+        <button id="closeSettingsButton" class="button secondary">キャンセル</button>
+      </div>
+    </div>
+
+    <div id="resultModal" class="modal hidden">
+      <div class="modal-content">
+        <h2>ゲーム結果</h2>
+        <p>最終スコア: <span id="finalScore">0</span></p>
+        <p>正解した単語数: <span id="correctWords">0</span></p>
+        <p>ミスタイプ文字数: <span id="mistypedChars">0</span></p>
+        <button id="closeResultButton" class="button primary">閉じる</button>
+      </div>
+    </div>
   </div>
 
   <div id="overlay" class="overlay hidden" aria-hidden="true"></div>
