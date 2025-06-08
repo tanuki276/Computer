@@ -1,417 +1,402 @@
-/* style.css */
-
-/* 基本設定とフォント */
 body {
-    font-family: 'Noto Sans JP', sans-serif;
-    background-color: #e0f2f7; /* 明るい水色 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh; /* ビューポートの高さいっぱいにする */
-    margin: 0;
-    color: #333; /* 基本の文字色 */
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+font-family: 'Noto Sans JP', sans-serif;
+background-color: #e0f2f7;
+display: flex;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+margin: 0;
+color: #333;
+line-height: 1.6;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
 }
 
 .container {
-    position: relative;
-    width: 100%;
-    max-width: 600px; /* 最大幅を設定 */
-    margin: 20px;
+position: relative;
+width: 100%;
+max-width: 600px;
+margin: 20px;
 }
 
-/* カードとパネルの共通スタイル */
 .game-card, .settings-panel {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    text-align: center;
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+background-color: #ffffff;
+border-radius: 12px;
+box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+padding: 30px;
+text-align: center;
+transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
-/* ゲームタイトル */
 .game-title {
-    font-size: 2.2em;
-    color: #007bff; /* 青 */
-    margin-bottom: 25px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
+font-size: 2.2em;
+color: #007bff;
+margin-bottom: 25px;
+font-weight: 700;
+letter-spacing: 0.05em;
 }
 
-/* 単語表示エリア */
 #wordDisplay {
-    margin-bottom: 25px;
-    min-height: 120px; /* レイアウト崩れ防止 */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+margin-bottom: 25px;
+min-height: 120px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
 }
 
 .kanji-text {
-    font-size: 3em;
-    font-weight: 700;
-    color: #2c3e50; /* ダークグレー */
-    margin-bottom: 5px;
-    word-wrap: break-word; /* 長い単語に対応 */
-    line-height: 1.2;
+font-size: 3em;
+font-weight: 700;
+color: #2c3e50;
+margin-bottom: 5px;
+word-wrap: break-word;
+line-height: 1.2;
 }
 
 .kana-text {
-    font-size: 1.5em;
-    color: #6c757d; /* グレー */
-    word-wrap: break-word;
+font-size: 1.5em;
+color: #6c757d;
+word-wrap: break-word;
 }
 
-/* 入力フィードバック */
 .typed-feedback {
-    font-family: 'Noto Sans JP', 'Meiryo', 'monospace'; /* 等幅フォントで文字ずれを防ぐ */
-    font-size: 1.8em;
-    min-height: 1.2em; /* 高さ固定 */
-    margin-bottom: 20px;
-    text-align: left; /* 左寄せ */
-    padding: 0 10px;
-    box-sizing: border-box;
-    white-space: pre; /* 半角スペースを維持 */
+font-family: 'Noto Sans JP', 'Meiryo', monospace;
+font-size: 1.8em;
+min-height: 1.2em;
+margin-bottom: 20px;
+text-align: left;
+padding: 0 10px;
+box-sizing: border-box;
+white-space: pre;
 }
 
 .typed-feedback .correct {
-    color: #28a745; /* 緑 */
+color: #28a745;
 }
 
 .typed-feedback .incorrect {
-    color: #dc3545; /* 赤 */
-    text-decoration: underline;
+color: #dc3545;
+text-decoration: underline;
 }
 
 .typed-feedback .placeholder {
-    color: #ccc; /* プレースホルダーの色 */
+color: #ccc;
 }
 
-/* ローマ字入力欄 */
 .romaji-input {
-    width: calc(100% - 20px); /* 左右のパディングを考慮 */
-    padding: 15px;
-    font-size: 1.6em;
-    border: 2px solid #ced4da;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    outline: none; /* フォーカス時のデフォルトのアウトラインを消す */
-    transition: border-color 0.3s, box-shadow 0.3s;
-    box-sizing: border-box; /* パディングとボーダーを幅に含める */
+width: calc(100% - 20px);
+padding: 15px;
+font-size: 1.6em;
+border: 2px solid #ced4da;
+border-radius: 8px;
+margin-bottom: 25px;
+outline: none;
+transition: border-color 0.3s, box-shadow 0.3s;
+box-sizing: border-box;
 }
 
 .romaji-input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+border-color: #007bff;
+box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
 .romaji-input.correct-input {
-    border-color: #28a745;
-    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
+border-color: #28a745;
+box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
 }
 
 .romaji-input.incorrect-input {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+border-color: #dc3545;
+box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
 }
 
-/* ゲームステータス表示 */
 .game-status {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 25px;
-    width: 100%;
+display: flex;
+justify-content: space-around;
+margin-bottom: 25px;
+width: 100%;
 }
 
 .status-item {
-    font-size: 1.3em;
-    font-weight: 700;
-    color: #555;
-    white-space: nowrap; /* テキストの折り返しを防ぐ */
+font-size: 1.3em;
+font-weight: 700;
+color: #555;
+white-space: nowrap;
 }
 
-/* ボタン共通スタイル */
 .btn {
-    background-color: #007bff;
-    color: white;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.1s ease;
-    margin: 5px;
-    min-width: 150px;
-    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+background-color: #007bff;
+color: white;
+padding: 15px 30px;
+border: none;
+border-radius: 8px;
+font-size: 1.2em;
+cursor: pointer;
+transition: background-color 0.3s ease, transform 0.1s ease;
+margin: 5px;
+min-width: 150px;
+box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
 }
 
 .btn:hover {
-    background-color: #0056b3;
-    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
+background-color: #0056b3;
+box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
 }
 
 .btn:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+transform: translateY(2px);
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .btn.secondary-btn {
-    background-color: #6c757d;
-    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
+background-color: #6c757d;
+box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
 }
 
 .btn.secondary-btn:hover {
-    background-color: #5a6268;
-    box-shadow: 0 6px 12px rgba(108, 117, 125, 0.3);
+background-color: #5a6268;
+box-shadow: 0 6px 12px rgba(108, 117, 125, 0.3);
 }
 
-/* アニメーション */
 .correct-word-animation {
-    animation: bounceIn 0.3s forwards;
+animation: bounceIn 0.3s forwards;
 }
 
 @keyframes bounceIn {
-    0% { transform: scale(0.9); opacity: 0; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(1); }
+0% { transform: scale(0.9); opacity: 0; }
+50% { transform: scale(1.1); opacity: 1; }
+100% { transform: scale(1); }
 }
 
-/* 設定パネル */
 .settings-panel {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    z-index: 20; /* オーバーレイより高い */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+box-sizing: border-box;
+z-index: 20;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
 }
 
 .settings-panel h2 {
-    font-size: 2em;
-    color: #007bff;
-    margin-bottom: 30px;
-    font-weight: 700;
+font-size: 2em;
+color: #007bff;
+margin-bottom: 30px;
+font-weight: 700;
 }
 
 .setting-group {
-    margin-bottom: 20px;
-    text-align: left;
-    width: 80%;
-    max-width: 350px; /* 設定項目の最大幅を少し広げる */
+margin-bottom: 20px;
+text-align: left;
+width: 80%;
+max-width: 350px;
 }
 
 .setting-group label {
-    display: block;
-    font-size: 1.1em;
-    margin-bottom: 8px;
-    font-weight: 700;
-    color: #555;
+display: block;
+font-size: 1.1em;
+margin-bottom: 8px;
+font-weight: 700;
+color: #555;
 }
 
 .select-box, .input-number {
-    width: 100%;
-    padding: 12px;
-    font-size: 1.1em;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    outline: none;
-    box-sizing: border-box;
-    transition: border-color 0.3s;
+width: 100%;
+padding: 12px;
+font-size: 1.1em;
+border: 1px solid #ced4da;
+border-radius: 5px;
+outline: none;
+box-sizing: border-box;
+transition: border-color 0.3s;
 }
 
 .select-box:focus, .input-number:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+border-color: #007bff;
+box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
 .custom-seconds-wrapper {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px; /* 要素間の隙間 */
+margin-top: 10px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 10px;
 }
 
 .custom-seconds-wrapper input {
-    flex-grow: 1; /* 入力フィールドが利用可能なスペースを埋める */
+flex-grow: 1;
 }
 
-/* オーバーレイ */
 .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* 薄黒くする */
-    z-index: 10; /* コンテンツの下、モーダルの上 */
-    transition: opacity 0.3s ease-in-out;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.6);
+z-index: 10;
+transition: opacity 0.3s ease-in-out;
 }
 
-/* モーダル */
 .modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #ffffff;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-    z-index: 30; /* オーバーレイより高い */
-    width: 90%;
-    max-width: 450px;
-    text-align: center;
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+background-color: #ffffff;
+padding: 40px;
+border-radius: 12px;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+z-index: 30;
+width: 90%;
+max-width: 450px;
+text-align: center;
+transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
 .modal-title {
-    font-size: 2.5em;
-    color: #007bff;
-    margin-bottom: 25px;
-    font-weight: 700;
+font-size: 2.5em;
+color: #007bff;
+margin-bottom: 25px;
+font-weight: 700;
 }
 
 .modal-content p {
-    font-size: 1.4em;
-    margin-bottom: 15px;
-    color: #444;
+font-size: 1.4em;
+margin-bottom: 15px;
+color: #444;
 }
 
 .result-score {
-    font-size: 1.8em;
-    font-weight: 700;
-    color: #28a745; /* 緑 */
+font-size: 1.8em;
+font-weight: 700;
+color: #28a745;
 }
 
 .result-count {
-    font-weight: 700;
-    color: #007bff; /* 青 */
+font-weight: 700;
+color: #007bff;
 }
 
-/* 共通のhiddenクラス (重要: pointer-events: none を削除) */
 .hidden {
-    display: none;
-    opacity: 0;
-    /* transition: opacity 0.3s ease-in-out; */ /* 必要なら追加 */
-    /* pointer-events: none; を削除 */
+display: none;
+opacity: 0;
 }
 
-/* レスポンシブデザイン */
 @media (max-width: 768px) {
-    .game-card, .settings-panel, .modal {
-        margin: 15px;
-        padding: 25px;
-    }
+.game-card, .settings-panel, .modal {
+margin: 15px;
+padding: 25px;
+}
 
-    .game-title {
-        font-size: 1.8em;
-    }
+.game-title {  
+    font-size: 1.8em;  
+}  
 
-    .kanji-text {
-        font-size: 2.5em;
-    }
+.kanji-text {  
+    font-size: 2.5em;  
+}  
 
-    .kana-text {
-        font-size: 1.2em;
-    }
+.kana-text {  
+    font-size: 1.2em;  
+}  
 
-    .typed-feedback {
-        font-size: 1.5em;
-    }
+.typed-feedback {  
+    font-size: 1.5em;  
+}  
 
-    .romaji-input {
-        font-size: 1.4em;
-        padding: 12px;
-    }
+.romaji-input {  
+    font-size: 1.4em;  
+    padding: 12px;  
+}  
 
-    .status-item {
-        font-size: 1.1em;
-    }
+.status-item {  
+    font-size: 1.1em;  
+}  
 
-    .btn {
-        padding: 12px 20px;
-        font-size: 1em;
-        min-width: 120px;
-    }
+.btn {  
+    padding: 12px 20px;  
+    font-size: 1em;  
+    min-width: 120px;  
+}  
 
-    .modal-title {
-        font-size: 2em;
-    }
+.modal-title {  
+    font-size: 2em;  
+}  
 
-    .modal-content p {
-        font-size: 1.2em;
-    }
+.modal-content p {  
+    font-size: 1.2em;  
+}  
 
-    .result-score {
-        font-size: 1.5em;
-    }
+.result-score {  
+    font-size: 1.5em;  
+}
+
 }
 
 @media (max-width: 480px) {
-    .game-card, .settings-panel, .modal {
-        margin: 10px;
-        padding: 20px;
-    }
-
-    .game-title {
-        font-size: 1.5em;
-    }
-
-    .kanji-text {
-        font-size: 2em;
-    }
-
-    .kana-text {
-        font-size: 1em;
-    }
-
-    .typed-feedback {
-        font-size: 1.3em;
-    }
-
-    .romaji-input {
-        font-size: 1.2em;
-        padding: 10px;
-    }
-
-    .game-status {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px; /* アイテム間の隙間 */
-    }
-
-    .status-item {
-        margin-bottom: 0; /* カラムレイアウトなので下マージン不要 */
-    }
-
-    .btn {
-        width: 100%;
-        margin-bottom: 10px; /* ボタン間の隙間 */
-    }
-
-    .modal-title {
-        font-size: 1.8em;
-    }
-
-    .modal-content p {
-        font-size: 1em;
-    }
-
-    .result-score {
-        font-size: 1.3em;
-    }
-
-    .setting-group {
-        width: 100%; /* 小さい画面では全幅に */
-    }
+.game-card, .settings-panel, .modal {
+margin: 10px;
+padding: 20px;
 }
+
+.game-title {  
+    font-size: 1.5em;  
+}  
+
+.kanji-text {  
+    font-size: 2em;  
+}  
+
+.kana-text {  
+    font-size: 1em;  
+}  
+
+.typed-feedback {  
+    font-size: 1.3em;  
+}  
+
+.romaji-input {  
+    font-size: 1.2em;  
+    padding: 10px;  
+}  
+
+.game-status {  
+    flex-direction: column;  
+    align-items: center;  
+    gap: 10px;  
+}  
+
+.status-item {  
+    margin-bottom: 0;  
+}  
+
+.btn {  
+    width: 100%;  
+    margin-bottom: 10px;  
+}  
+
+.modal-title {  
+    font-size: 1.8em;  
+}  
+
+.modal-content p {  
+    font-size: 1em;  
+}  
+
+.result-score {  
+    font-size: 1.3em;  
+}  
+
+.setting-group {  
+    width: 100%;  
+}
+
+}
+
