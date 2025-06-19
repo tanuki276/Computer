@@ -110,19 +110,19 @@ document.addEventListener("DOMContentLoaded", () => {
     setNewWord();
 
     const mode = timeModeSettingsEl.value;
-    if (mode === "custom" || mode === "reset") {
+    if (mode === "custom") {
       timeLimit = parseInt(customSecondsSettingsEl.value) || 30;
-      if(mode === "reset") timeLimit = null;
     } else if (mode === "30") {
       timeLimit = 30;
     } else if (mode === "60") {
       timeLimit = 60;
     } else {
+      // resetやその他は制限なし
       timeLimit = null;
     }
 
+    if (timer) clearInterval(timer);
     if (timeLimit !== null) {
-      clearInterval(timer);
       secondsLeft = timeLimit;
       timerDisplay.textContent = `残り: ${secondsLeft} 秒`;
 
@@ -134,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }, 1000);
     } else {
-      clearInterval(timer);
       timerDisplay.textContent = "制限なし";
     }
   }
@@ -154,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function stopGame() {
-    clearInterval(timer);
+    if (timer) clearInterval(timer);
     kanjiEl.textContent = "終了！";
     kanaEl.textContent = "";
     inputEl.disabled = true;
@@ -180,16 +179,10 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleHidden(overlay, !shouldShowOverlay);
 
     if (show) {
-      clearInterval(timer);
+      if (timer) clearInterval(timer);
       kanjiEl.textContent = "設定を変更してね！";
       kanaEl.textContent = "";
       inputEl.disabled = true;
-
-      wordCategorySettingsEl.value = wordCategorySettingsEl.value;
-      timeModeSettingsEl.value = timeModeSettingsEl.value;
-      customSecondsSettingsEl.value = customSecondsSettingsEl.value;
-
-      timeModeSettingsEl.dispatchEvent(new Event('change'));
     } else {
       kanjiEl.textContent = "スタートボタンを押して開始！";
       kanaEl.textContent = "";
@@ -249,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         feedback += `<span class="incorrect">${inputText[i]}</span>`;
         allCorrect = false;
-        mistypeCount++;
+        mistypeCount++;  // ミスタイプの累積カウント。気になる場合はsetNewWordでリセットしても良い
       }
     }
 
@@ -278,7 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   timeModeSettingsEl.addEventListener('change', function() {
     const selectedMode = this.value;
-    const showCustomSeconds = selectedMode === 'custom' || selectedMode === 'reset';
+    const showCustomSeconds = selectedMode === 'custom';
     toggleHidden(customSecondsWrapperSettings, !showCustomSeconds);
   });
 
