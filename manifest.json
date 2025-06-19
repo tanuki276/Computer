@@ -1,14 +1,14 @@
 {
-  "name": "タイピング",
+  "name": "タイピングゲーム",
   "short_name": "タイピング",
-  "start_url": "https://computer-gray.vercel.app/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2196f3",
   "icons": [
     {
-      "src": "192×192favicon.png",
-      "sizes": "192x192",
+      "src": "favicon-192×192.png",
+      "sizes": "192×192",
       "type": "image/png"
     }
   ]
